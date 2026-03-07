@@ -3,24 +3,29 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Movement")]
     public float speed = 5f;
     public float gravity = -9.81f;
     public float jumpHeight = 1.5f;
     public float rotationSpeed = 10f;
 
+    [Header("Shooting")]
+    // これを追加：弾のプレハブをインスペクターから入れるため
+    public GameObject bulletPrefab; 
+    // これを追加：銃口の位置を指定するため
+    public Transform firePoint;     
+    public float bulletSpeed = 20f;
+
     private CharacterController controller;
     private Vector3 velocity;
     private bool isGrounded;
     private Animator anim;
-    
-    // 追加：カメラの向きを参照するための変数
     private Transform cam;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
-        // メインカメラの情報を取得
         cam = Camera.main.transform;
     }
 
@@ -36,10 +41,9 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        // 1. カメラの向きに基づいた移動方向を計算
         Vector3 forward = cam.forward;
         Vector3 right = cam.right;
-        forward.y = 0f; // 地面と水平に動くように
+        forward.y = 0f;
         right.y = 0f;
         forward.Normalize();
         right.Normalize();
@@ -48,31 +52,39 @@ public class PlayerMovement : MonoBehaviour
 
         if (move.magnitude >= 0.1f)
         {
-            // 2. 移動方向にスムーズに回転
             float targetAngle = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.Euler(0f, targetAngle, 0f);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
-
-            // 3. 移動実行
             controller.Move(move * speed * Time.deltaTime);
         }
 
-        // アニメーションの更新
         bool isMoving = (move.magnitude > 0);
         if (anim != null) 
         {
             anim.SetBool("isRunning", isMoving);
         }
 
-        // ジャンプ処理
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        if (Input.GetButton("Fire1")) 
+        // 射撃処理を修正
+        if (Input.GetButtonDown("Fire1")) 
         {
-            anim.SetTrigger("Shoot");
+            if (anim != null) anim.SetTrigger("Shoot");
+
+            // 弾を生成して飛ばす処理を追加
+            if (bulletPrefab != null && firePoint != null)
+            {
+                // 1. 弾を生成
+                GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+                // 2. 弾を前に飛ばす
+                Rigidbody rb = bullet.GetComponent<Rigidbody>();
+                if (rb != null) rb.linearVelocity = firePoint.forward * bulletSpeed;
+                // 3. 3秒後に弾を消す
+                Destroy(bullet, 3f);
+            }
         }
 
         velocity.y += gravity * Time.deltaTime;
