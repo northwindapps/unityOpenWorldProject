@@ -178,7 +178,7 @@ MonoBehaviour:
   gravity: -9.81
   jumpHeight: 1.5
   rotationSpeed: 10
-  bulletPrefab: {fileID: 1350793438640263551, guid: 3de08f9d317e24a99a730d51299b94d4, type: 3}
+  bulletPrefab: {fileID: 0}
   firePoint: {fileID: 0}
   bulletSpeed: 20
 --- !u!143 &249283344
