@@ -72,7 +72,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetButton("Fire1")) 
         {
-            Debug.Log("Bang!");
             anim.SetTrigger("Shoot");
         }
 
