@@ -14,19 +14,16 @@ public class EnemyMovement : MonoBehaviour
     }
 
     void Update()
+{
+    if (player != null)
     {
-        if (player != null)
-        {
-            // 1. Tell the AI where to go
-            agent.SetDestination(player.position);
+        // 1. 目的地をセット
+        agent.SetDestination(player.position);
 
-            // 2. Sync the Animation with the AI movement speed
-            // If the agent is moving, the animator will play the run/walk animation
-            float speed = agent.velocity.magnitude;
-            anim.SetFloat("Speed", speed); 
-            
-            // Note: Change "Speed" to whatever the float parameter 
-            // is called in your Soldier's Animator Controller.
-        }
+        // 2. あなたのAnimatorの "isRunning" スイッチを入れる
+        // 速度が 0.1 より大きければ走る(true)、そうでなければ止まる(false)
+        bool moving = agent.velocity.magnitude > 0.1f;
+        anim.SetBool("isRunning", moving); 
     }
+}
 }
