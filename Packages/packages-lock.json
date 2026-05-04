@@ -82,7 +82,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ai.toolkit": {
-      "version": "1.6.0-pre.2",
+      "version": "1.7.0-pre.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {

@@ -50,11 +50,12 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 move = (forward * z + right * x).normalized;
 
+        float targetAngle = Mathf.Atan2(cam.forward.x, cam.forward.z) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0f, targetAngle, 0f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+
         if (move.magnitude >= 0.1f)
         {
-            float targetAngle = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.Euler(0f, targetAngle, 0f);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
             controller.Move(move * speed * Time.deltaTime);
         }
 

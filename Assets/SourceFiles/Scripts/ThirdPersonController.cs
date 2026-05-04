@@ -228,6 +228,7 @@ public bool IsRespawning { get; set; } = false;
         _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier * LookSensitivity.x;
         _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier * LookSensitivity.y;
     }
+    _input.look = Vector2.zero;
 
     _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
     _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
